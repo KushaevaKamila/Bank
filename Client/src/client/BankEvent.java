@@ -1,15 +1,17 @@
 package client;
 
+import pack.Pack;
+
 import java.util.EventObject;
 public class BankEvent extends EventObject {
 
-    private String message;
-    public BankEvent(String source) {
+    private Pack pack;
+    public BankEvent(Pack source) {
         super(source);
-        this.message = source;
+        this.pack = source;
     }
-    public String getMessage1()
+    public Pack getMessage1()
     {
-        return message;
+        return pack;
     }
 }

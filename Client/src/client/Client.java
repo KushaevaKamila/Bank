@@ -45,17 +45,8 @@ public class Client {
         }
     }
     public Void parse(Pack pack){
-        switch (pack.action)
-        {
-            case REGISTRATION -> {}
-            case LOGIN -> {}
-            case DEBIT -> {}
-            case CREDIT -> {}
-            case DEPOSIT -> {}
-            case DELETE -> {}
-            case ERROR -> {}
-            case TRANSACTION -> {}
-        }
+        BankEvent be = new BankEvent(pack);
+        fireEvent(be);
         return  null;
     }
     protected List<BankListener> listeners = new ArrayList<>();

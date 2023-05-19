@@ -30,7 +30,7 @@ public class ConnectedClient {
             try{
                 inter.startInteraction(this::parse);
                 Pack pack =new Pack();
-                pack.action = Actions.REGISTRATION;
+                pack.action = Actions.LOGIN;
                 inter.send(pack);
             } catch (Exception e){
                 clients.remove(this);
