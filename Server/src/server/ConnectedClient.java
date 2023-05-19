@@ -83,6 +83,7 @@ public class ConnectedClient {
                    {
                        personalData = help.selectPersonalData(help.getID(pack.personalData.number));
                        accounts = help.selectAccount(personalData.ID);
+                       personalData = help.selectPersonalData(pack.personalData.ID);;
                        Pack returnedPack = new Pack();
                        returnedPack.personalData = this.personalData;
                        returnedPack.accounts = this.accounts;
@@ -99,8 +100,8 @@ public class ConnectedClient {
                try
                {
                     help.insertAccount(new Account(0,pack.personalData.ID,"debit card", 0.));
-                    personalData = help.selectPersonalData(help.getID(pack.personalData.number));
                     accounts = help.selectAccount(help.getID(pack.personalData.number));
+                    personalData = help.selectPersonalData(pack.personalData.ID);;
                     Pack returnedPack = new Pack();
                     returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                     returnedPack.accounts = help.selectAccount(pack.personalData.ID);
@@ -116,8 +117,8 @@ public class ConnectedClient {
                try
                {
                    help.insertAccount(new Account(0,pack.personalData.ID,"credit card", 0.));
-                   personalData = help.selectPersonalData(help.getID(pack.personalData.number));
                    accounts = help.selectAccount(help.getID(pack.personalData.number));
+                   personalData = help.selectPersonalData(pack.personalData.ID);;
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);
@@ -133,8 +134,8 @@ public class ConnectedClient {
                try
                {
                    help.insertAccount(new Account(0,pack.personalData.ID,"deposit", 0.));
-                   personalData = help.selectPersonalData(help.getID(pack.personalData.number));
                    accounts = help.selectAccount(help.getID(pack.personalData.number));
+                   personalData = help.selectPersonalData(pack.personalData.ID);;
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);
@@ -150,8 +151,8 @@ public class ConnectedClient {
                try
                {
                    help.deleteAccount(pack.accounts.get(0).ID);
-                   personalData = help.selectPersonalData(help.getID(pack.personalData.number));
                    accounts = help.selectAccount(help.getID(pack.personalData.number));
+                   personalData = help.selectPersonalData(pack.personalData.ID);;
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);
@@ -164,7 +165,21 @@ public class ConnectedClient {
                }
            }
            case TRANSACTION -> {
-               
+               try
+               {
+                   help.transaction(pack.accounts.get(0), pack.accounts.get(1));
+                   accounts = help.selectAccount(help.getID(pack.personalData.number));
+                   personalData = help.selectPersonalData(pack.personalData.ID);;
+                   Pack returnedPack = new Pack();
+                   returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
+                   returnedPack.accounts = help.selectAccount(pack.personalData.ID);
+                   returnedPack.action = Actions.TRANSACTION;
+                   inter.send(returnedPack);
+               }
+               catch (Exception e)
+               {
+                   onError(e);
+               }
            }
            case ERROR -> {}
            default -> {}

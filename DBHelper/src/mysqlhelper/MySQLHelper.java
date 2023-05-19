@@ -77,4 +77,19 @@ public class MySQLHelper {
         ResultSet set = con.createStatement().executeQuery(sql);
         return SCryptUtil.check(set.getString(3), password);
     }
+    public void transaction(Account first, Account second) throws SQLException {
+        String sql = "START TRANSACTION;" +
+                "update bank.account set " +
+                (first.type != null ? "type = " + first.type + "," : "") +
+                (first.money != null ? "money = " + first.money : "") +
+                (first.personalID != null ? "personalid = " + first.personalID : "") +
+                "where ID = " + first.ID + ";" +
+                "update bank.account set " +
+                (second.type != null ? "type = " + second.type + "," : "") +
+                (second.money != null ? "money = " + second.money : "") +
+                (second.personalID != null ? "personalid = " + second.personalID : "") +
+                "where ID = " + second.ID + ";" +
+                "COMMIT;";
+        con.createStatement().execute(sql);
+    }
 }
