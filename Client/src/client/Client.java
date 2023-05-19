@@ -19,14 +19,14 @@ public class Client {
         this.host = host;
         this.port = port;
     }
-    public void start() throws IOException {
+    public void start() throws Exception {
         s = new Socket(host, port);
         interaction = new Interaction(s);
         new Thread(()->{
             try {
                 interaction.startInteraction(this::parse);
             } catch (Exception e) {
-                throw new Exception(e);
+
             }
         }).start();
     }
