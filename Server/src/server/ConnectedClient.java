@@ -28,10 +28,10 @@ public class ConnectedClient {
     public void start(){
         new Thread(()->{
             try{
-                inter.startInteraction(this::parse);
                 Pack pack =new Pack();
                 pack.action = Actions.LOGIN;
                 inter.send(pack);
+                inter.startInteraction(this::parse);
             } catch (Exception e){
                 clients.remove(this);
             }
@@ -54,28 +54,28 @@ public class ConnectedClient {
        switch (pack.action)
        {
            case REGISTRATION -> {
-                try
-                {
-                    if(help.isExist(pack.personalData.number))
-                    {
-                        throw new Exception("Данный пользователь уже зарегистрирован");
-                    }
-                    else
-                    {
-                        help.insertPersonalData(new PersonalData(0,pack.personalData.name,pack.personalData.number,pack.personalData.password));
-                        personalData = help.selectPersonalData(help.getID(pack.personalData.number));
-                        accounts = help.selectAccount(help.getID(pack.personalData.number));
-                        Pack returnedPack = new Pack();
-                        returnedPack.action = Actions.LOGIN;
-                        returnedPack.accounts = help.selectAccount(help.getID(pack.personalData.number));
-                        returnedPack.personalData = help.selectPersonalData(help.getID(pack.personalData.number));
-                        inter.send(returnedPack);
-                    }
-                }
-                catch(Exception e)
-                {
-                      onError(e);
-                }
+               try
+               {
+                   if(help.isExist(pack.personalData.number))
+                   {
+                       throw new Exception("Данный пользователь уже зарегистрирован");
+                   }
+                   else
+                   {
+                       help.insertPersonalData(new PersonalData(0,pack.personalData.name,pack.personalData.number,pack.personalData.password));
+                       personalData = help.selectPersonalData(help.getID(pack.personalData.number));
+                       accounts = help.selectAccount(help.getID(pack.personalData.number));
+                       Pack returnedPack = new Pack();
+                       returnedPack.action = Actions.LOGIN;
+                       returnedPack.accounts = help.selectAccount(help.getID(pack.personalData.number));
+                       returnedPack.personalData = help.selectPersonalData(help.getID(pack.personalData.number));
+                       inter.send(returnedPack);
+                   }
+               }
+               catch(Exception e)
+               {
+                   onError(e);
+               }
            }
            case LOGIN -> {
                try {
@@ -87,7 +87,7 @@ public class ConnectedClient {
                        Pack returnedPack = new Pack();
                        returnedPack.personalData = this.personalData;
                        returnedPack.accounts = this.accounts;
-                       returnedPack.action = Actions.LOGIN;
+                       returnedPack.action = Actions.DEBIT;
                        inter.send(returnedPack);
                    }
                }
@@ -99,18 +99,18 @@ public class ConnectedClient {
            case DEBIT -> {
                try
                {
-                    help.insertAccount(new Account(0,pack.personalData.ID,"debit card", 0.));
-                    accounts = help.selectAccount(help.getID(pack.personalData.number));
-                    personalData = help.selectPersonalData(pack.personalData.ID);;
-                    Pack returnedPack = new Pack();
-                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
-                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);
-                    returnedPack.action = Actions.DEBIT;
-                    inter.send(returnedPack);
+                   help.insertAccount(new Account(0,pack.personalData.ID,"debit card", 0.));
+                   accounts = help.selectAccount(help.getID(pack.personalData.number));
+                   personalData = help.selectPersonalData(pack.personalData.ID);;
+                   Pack returnedPack = new Pack();
+                   returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
+                   returnedPack.accounts = help.selectAccount(pack.personalData.ID);
+                   returnedPack.action = Actions.DEBIT;
+                   inter.send(returnedPack);
                }
                catch (Exception e)
                {
-                    onError(e);
+                   onError(e);
                }
            }
            case CREDIT -> {
@@ -156,7 +156,7 @@ public class ConnectedClient {
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);
-                   returnedPack.action = Actions.DELETE;
+                   returnedPack.action = Actions.DEBIT;
                    inter.send(returnedPack);
                }
                catch (Exception e)
@@ -173,7 +173,7 @@ public class ConnectedClient {
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);
-                   returnedPack.action = Actions.TRANSACTION;
+                   returnedPack.action = Actions.DEBIT;
                    inter.send(returnedPack);
                }
                catch (Exception e)
@@ -184,7 +184,7 @@ public class ConnectedClient {
            case ERROR -> {}
            default -> {}
        }
-       return null;
+        return null;
     }
 
     public void sendPack(Pack pack) throws IOException {

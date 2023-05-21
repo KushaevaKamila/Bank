@@ -13,13 +13,14 @@ public class Interaction {
     private ObjectOutputStream outputStream;
     public Interaction(Socket socket) throws IOException {
         this.socket = socket;
+        outputStream =new ObjectOutputStream(socket.getOutputStream());
     }
     public void send(Pack pack) throws IOException {
         outputStream.writeObject(pack);
+        outputStream.flush();
     }
     public void startInteraction(Function<Pack, Void> parser) throws Exception {
-        outputStream =new ObjectOutputStream(socket.getOutputStream());
-        inputStream =new ObjectInputStream(socket.getInputStream());
+        inputStream = new ObjectInputStream(socket.getInputStream());
         stop = false;
         while (!stop){
             Pack pack = (Pack)inputStream.readObject();

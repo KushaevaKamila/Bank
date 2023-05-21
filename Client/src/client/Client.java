@@ -1,5 +1,7 @@
 package client;
 
+import mysqlhelper.Account;
+import mysqlhelper.PersonalData;
 import pack.Actions;
 import pack.Interaction;
 import pack.Pack;
@@ -26,28 +28,16 @@ public class Client {
             try {
                 interaction.startInteraction(this::parse);
             } catch (Exception e) {
-
+                System.out.println(e.getMessage());
             }
         }).start();
     }
 
-    public void onError(Exception e)
-    {
-        Pack errorPack = new Pack();
-        errorPack.message = e.getMessage();
-        errorPack.action = Actions.ERROR;
-        try
-        {
-            interaction.send(errorPack);
-        }
-        catch(Exception ignored) {
 
-        }
-    }
     public Void parse(Pack pack){
         BankEvent be = new BankEvent(pack);
         fireEvent(be);
-        return  null;
+        return null;
     }
     protected List<BankListener> listeners = new ArrayList<>();
     public void addListener(BankListener a)

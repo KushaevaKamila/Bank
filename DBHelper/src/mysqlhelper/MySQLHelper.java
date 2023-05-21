@@ -1,20 +1,19 @@
 package mysqlhelper;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import com.lambdaworks.crypto.SCryptUtil;
 public class MySQLHelper {
     private Connection con;
-    private String account = "account";
-    private String personalData = "personalData";
-    private String schema = "bank";
     private String user = "root";
     private String password = "root";
     private String host = "localhost";
     private int port = 3306;
     private String connStr = "jdbc:mysql://" + host + ":" + port;
-    public MySQLHelper() throws SQLException {
+    public MySQLHelper() throws Exception {
         con = DriverManager.getConnection(connStr, user, password);
+
     }
     public boolean isExist(long number) throws SQLException {
         String sql = "select count(*) from bank.account where number = " + number;
