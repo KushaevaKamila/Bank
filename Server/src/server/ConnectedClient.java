@@ -171,8 +171,11 @@ public class ConnectedClient {
            case TRANSACTION -> {
                try
                {
+                   double tmp = pack.accounts.get(0).money;
+                   pack.accounts.get(0).money =  help.selectAccount(pack.accounts.get(0).ID, 1).get(0).money - pack.accounts.get(0).money;
+                   pack.accounts.get(1).money = help.selectAccount(pack.accounts.get(1).ID, 1).get(0).money + tmp;
                    help.transaction(pack.accounts.get(0), pack.accounts.get(1));
-                   accounts = help.selectAccount(help.getID(pack.personalData.number));
+                   accounts = help.selectAccount(pack.personalData.ID);
                    personalData = help.selectPersonalData(pack.personalData.ID);;
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);

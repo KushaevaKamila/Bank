@@ -38,11 +38,11 @@ public class TransactionWindow extends JFrame {
                                         gl.createSequentialGroup()
                                                 .addComponent(fromID, MIN_SZ, MIN_SZ, MIN_SZ)
                                                 .addGap(8)
-                                                .addComponent(toID,MAX_SZ, MAX_SZ, MAX_SZ)
+                                                .addComponent(sum,MAX_SZ, MAX_SZ, MAX_SZ)
                                 )
                                 .addGroup(
                                         gl.createSequentialGroup()
-                                                .addComponent(sum, MIN_SZ, MIN_SZ, MIN_SZ)
+                                                .addComponent(toID, MIN_SZ, MIN_SZ, MIN_SZ)
                                                 .addGap(8)
                                                 .addComponent(send,MAX_SZ, MAX_SZ, MAX_SZ)
                                 )
@@ -55,11 +55,11 @@ public class TransactionWindow extends JFrame {
                         .addGroup(
                                 gl.createParallelGroup()
                                         .addComponent(fromID,MIN_SZ, MIN_SZ, MIN_SZ)
-                                        .addComponent(toID, MIN_SZ, MIN_SZ, MIN_SZ)
+                                        .addComponent(sum, MIN_SZ, MIN_SZ, MIN_SZ)
                         )
                         .addGroup(
                                 gl.createParallelGroup()
-                                        .addComponent(sum,MIN_SZ, MIN_SZ, MIN_SZ)
+                                        .addComponent(toID,MIN_SZ, MIN_SZ, MIN_SZ)
                                         .addComponent(send, MIN_SZ, MIN_SZ, MIN_SZ)
                         )
                         .addGap(8,8,Integer.MAX_VALUE)
@@ -68,12 +68,15 @@ public class TransactionWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean check = true;
+
                 for(int i = 0; i<pack.accounts.size();i++)
                 {
                     if(Integer.parseInt(fromID.getText()) == pack.accounts.get(i).ID)
                     {
                         if(pack.accounts.get(i).money >= Integer.parseInt(sum.getText()))
+                        {
                             check = false;
+                        }
                     }
                 }
                 if(Integer.parseInt(sum.getText()) <= 0 || check)
@@ -87,9 +90,8 @@ public class TransactionWindow extends JFrame {
                     pack2.personalData = pack1.personalData;
                     ArrayList<Account> a = new ArrayList<>();
                     Account b= new Account(Integer.parseInt(fromID.getText()));
-                    b.money = b.money - Integer.parseInt(sum.getText());
-                    Account c =new Account(Integer.parseInt(toID.getText()));
-                    c.money = c.money + Integer.parseInt(sum.getText());
+                    b.money = Double.parseDouble(sum.getText());
+                    Account c = new Account(Integer.parseInt(toID.getText()));
                     a.add(b);
                     a.add(c);
                     pack2.accounts = a;

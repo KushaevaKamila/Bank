@@ -31,6 +31,16 @@ public class MySQLHelper {
         }
         return accs;
     }
+    public ArrayList<Account> selectAccount(int ID, int prostoTakMneLenPisat) throws Exception {
+        String sql = "select * from bank.account where id = " + ID;
+        ResultSet a = con.createStatement().executeQuery(sql);
+        ArrayList<Account> accs = new ArrayList<>();
+        while (a.next())
+        {
+            accs.add(new Account(a.getInt(1),a.getInt(2),a.getString(3), a.getDouble(4)));
+        }
+        return accs;
+    }
     public PersonalData selectPersonalData(int ID) throws SQLException {
         String sql = "select * from bank.personaldata where ID = " + ID;
         ResultSet a = con.createStatement().executeQuery(sql);
@@ -85,18 +95,30 @@ public class MySQLHelper {
         return a;
     }
     public void transaction(Account first, Account second) throws SQLException {
-        String sql = "START TRANSACTION;" +
-                "update bank.account set " +
-                (first.type != null ? "type = " + first.type + "," : "") +
+
+
+
+
+       /* String sql =
+                " update bank.account set " +
+                (first.type != null ? "type = '" + first.type + "'," : "") +
                 (first.money != null ? "money = " + first.money : "") +
                 (first.personalID != null ? "personalid = " + first.personalID : "") +
-                "where ID = " + first.ID + ";" +
-                "update bank.account set " +
-                (second.type != null ? "type = " + second.type + "," : "") +
+                " where ID = " + first.ID + ";" +
+                " update bank.account set " +
+                (second.type != null ? "type = '" + second.type + "'," : "") +
                 (second.money != null ? "money = " + second.money : "") +
                 (second.personalID != null ? "personalid = " + second.personalID : "") +
-                "where ID = " + second.ID + ";" +
-                "COMMIT;";
-        con.createStatement().execute(sql);
+                " where ID = " + second.ID + ";" ;*/
+        var st1  = con.prepareStatement("update bank.account set money = ? where ID = ? ");
+        var st2  = con.prepareStatement("update bank.account set money = ? where ID = ? ");
+        st1.setDouble(1,first.money);
+        st1.setInt(2,first.ID);
+        st2.setDouble(1,second.money);
+        st2.setInt(2,second.ID);
+        con.createStatement().executeQuery("START TRANSACTION ");
+        st1.executeUpdate();
+        st2.executeUpdate();
+        con.createStatement().executeQuery("COMMIT ");
     }
 }
