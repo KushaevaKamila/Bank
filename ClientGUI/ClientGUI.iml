@@ -7,5 +7,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="DBHelper" exported="" />
+    <orderEntry type="module" module-name="Client" exported="" />
+    <orderEntry type="module" module-name="Interaction" exported="" />
+    <orderEntry type="library" exported="" name="lambdaworks.scrypt" level="project" />
   </component>
 </module>

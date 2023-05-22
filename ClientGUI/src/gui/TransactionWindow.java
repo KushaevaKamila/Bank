@@ -19,14 +19,15 @@ public class TransactionWindow extends JFrame {
     private JTextField toID = new JTextField();
     private JTextField fromID = new JTextField();
     private JTextField sum = new JTextField();
-    private int MIN_SZ = GroupLayout.PREFERRED_SIZE;
+    private int MIN_SZ = 40;
     private int MAX_SZ = GroupLayout.DEFAULT_SIZE;
-    Pack pack1;
+    private Pack pack1;
 
     public TransactionWindow(Client client, Pack pack)
     {
         this.pack1 = pack;
-        setSize(600,450);
+        setSize(200,150);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         GroupLayout gl = new GroupLayout(getContentPane());
         setLayout(gl);
         gl.setHorizontalGroup(
@@ -66,34 +67,44 @@ public class TransactionWindow extends JFrame {
         send.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean check = false;
+                boolean check = true;
                 for(int i = 0; i<pack.accounts.size();i++)
                 {
                     if(Integer.parseInt(fromID.getText()) == pack.accounts.get(i).ID)
                     {
-                        check = true;
+                        if(pack.accounts.get(i).money >= Integer.parseInt(sum.getText()))
+                            check = false;
                     }
                 }
-                if(Integer.parseInt(send.getText()) <= 0 || check)
+                if(Integer.parseInt(sum.getText()) <= 0 || check)
                 {
                     send.setBackground(Color.red);
                 }
                 else
                 {
-                    Pack pack = new Pack();
-                    pack.action = Actions.TRANSACTION;
-                    pack.personalData = pack1.personalData;
+                    Pack pack2 = new Pack();
+                    pack2.action = Actions.TRANSACTION;
+                    pack2.personalData = pack1.personalData;
                     ArrayList<Account> a = new ArrayList<>();
-                    a.add(new Account(Integer.parseInt(fromID.getText())));
-                    a.add(new Account(Integer.parseInt(toID.getText())));
-                    pack.accounts = a;
+                    Account b= new Account(Integer.parseInt(fromID.getText()));
+                    b.money = b.money - Integer.parseInt(sum.getText());
+                    Account c =new Account(Integer.parseInt(toID.getText()));
+                    c.money = c.money + Integer.parseInt(sum.getText());
+                    a.add(b);
+                    a.add(c);
+                    pack2.accounts = a;
                     try {
-                        client.send(pack);
+                        client.send(pack2);
+                        dis();
                     } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        System.out.println("Transaction" + ex.getMessage());
                     }
                 }
             }
         });
+    }
+    private void dis()
+    {
+        this.dispose();
     }
 }

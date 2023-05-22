@@ -74,6 +74,7 @@ public class ConnectedClient {
                }
                catch(Exception e)
                {
+                   System.out.println(e.getMessage());
                    onError(e);
                }
            }
@@ -83,7 +84,7 @@ public class ConnectedClient {
                    {
                        personalData = help.selectPersonalData(help.getID(pack.personalData.number));
                        accounts = help.selectAccount(personalData.ID);
-                       personalData = help.selectPersonalData(pack.personalData.ID);;
+                       personalData = help.selectPersonalData(help.getID(pack.personalData.number));;
                        Pack returnedPack = new Pack();
                        returnedPack.personalData = this.personalData;
                        returnedPack.accounts = this.accounts;
@@ -93,6 +94,7 @@ public class ConnectedClient {
                }
                catch (Exception e)
                {
+                   System.out.println(e.getMessage());
                    onError(e);
                }
            }
@@ -127,6 +129,7 @@ public class ConnectedClient {
                }
                catch (Exception e)
                {
+                   System.out.println(e.getMessage());
                    onError(e);
                }
            }
@@ -144,6 +147,7 @@ public class ConnectedClient {
                }
                catch (Exception e)
                {
+                   System.out.println(e.getMessage());
                    onError(e);
                }
            }
@@ -151,8 +155,8 @@ public class ConnectedClient {
                try
                {
                    help.deleteAccount(pack.accounts.get(0).ID);
-                   accounts = help.selectAccount(help.getID(pack.personalData.number));
-                   personalData = help.selectPersonalData(pack.personalData.ID);;
+                   accounts = help.selectAccount(pack.personalData.ID);
+                   personalData = help.selectPersonalData(pack.personalData.ID);
                    Pack returnedPack = new Pack();
                    returnedPack.personalData = help.selectPersonalData(pack.personalData.ID);
                    returnedPack.accounts = help.selectAccount(pack.personalData.ID);

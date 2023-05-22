@@ -16,12 +16,13 @@ public class MySQLHelper {
 
     }
     public boolean isExist(long number) throws SQLException {
-        String sql = "select count(*) from bank.account where number = " + number;
+        String sql = "select count(*) a from bank.personaldata where number = " + number;
         ResultSet a = con.createStatement().executeQuery(sql);
-        return a.getInt(1) == 1;
+        a.next();
+        return (a.getInt(1) == 1);
     }
     public ArrayList<Account> selectAccount(int personalID) throws Exception {
-        String sql = "select * from bank.account where ID = " + personalID;
+        String sql = "select * from bank.account where personalid = " + personalID;
         ResultSet a = con.createStatement().executeQuery(sql);
         ArrayList<Account> accs = new ArrayList<>();
         while (a.next())
@@ -33,14 +34,15 @@ public class MySQLHelper {
     public PersonalData selectPersonalData(int ID) throws SQLException {
         String sql = "select * from bank.personaldata where ID = " + ID;
         ResultSet a = con.createStatement().executeQuery(sql);
+        a.next();
         return new PersonalData(a.getInt(1),a.getString(4), a.getLong(2),a.getString(3));
     }
     public void insertAccount(Account chel) throws SQLException {
-        String sql = "insert into bank.account(ID, personalid, type, money) values(" + chel.ID + ","+ chel.personalID +"," + chel.type + "," + chel.money+")";
+        String sql = "insert into bank.account(ID, personalid, type, money) values(" + chel.ID + ","+ chel.personalID +",'" + chel.type + "'," + chel.money+")";
         con.createStatement().execute(sql);
     }
     public void insertPersonalData(PersonalData chel) throws SQLException {
-        String sql = "insert into bank.personaldata(ID, name, number, password) values(" + chel.ID + "," + chel.name + "," + chel.number+","+chel.password+")";
+        String sql = "insert into bank.personaldata(ID, name, number, password) values(" + chel.ID + "," + chel.name + "," + chel.number+",'"+chel.password+"' )";
         con.createStatement().execute(sql);
     }
     public void updateAccount(Account chel) throws SQLException {
@@ -61,11 +63,15 @@ public class MySQLHelper {
     }
     public String getName(int ID) throws SQLException {
         String sql = "select name from bank.account where id =" + ID;
-        return con.createStatement().executeQuery(sql).getString(1);
+        ResultSet a = con.createStatement().executeQuery(sql);
+        a.next();
+        return a.getString(1);
     }
     public int getID(long number) throws SQLException {
         String sql = "select ID from bank.personalData where number =" + number;
-        return con.createStatement().executeQuery(sql).getInt(1);
+        ResultSet a = con.createStatement().executeQuery(sql);
+        a.next();
+        return a.getInt(1);
     }
     public void deleteAccount(int ID) throws SQLException {
         String sql = "delete from bank.account where id =" + ID;
@@ -74,7 +80,9 @@ public class MySQLHelper {
     public boolean isCorrect(long number, String password) throws SQLException {
         String sql = "SELECT * FROM bank.personalData where number = " + number;
         ResultSet set = con.createStatement().executeQuery(sql);
-        return SCryptUtil.check(set.getString(3), password);
+        set.next();
+        boolean a =SCryptUtil.check(set.getString(2), password);
+        return a;
     }
     public void transaction(Account first, Account second) throws SQLException {
         String sql = "START TRANSACTION;" +

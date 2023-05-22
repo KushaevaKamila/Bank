@@ -1,6 +1,8 @@
 package mysqlhelper;
 
-public class Account {
+import java.io.Serializable;
+
+public class Account implements Serializable {
     public Integer ID;
     public Integer personalID;
     public String type;

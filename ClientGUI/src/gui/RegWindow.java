@@ -1,6 +1,16 @@
 package gui;
 
+import client.BankEvent;
+import client.Client;
+import com.lambdaworks.crypto.SCryptUtil;
+import mysqlhelper.PersonalData;
+import pack.Actions;
+import pack.Pack;
+
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 
 public class RegWindow extends JFrame {
@@ -18,9 +28,10 @@ public class RegWindow extends JFrame {
 
     private JButton btnReg;
     private JButton btnCancel;
+    private Client client;
 
-
-    public RegWindow(){
+    public RegWindow(Client client){
+        this.client = client;
         setSize(600,450);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         GroupLayout gl = new GroupLayout(getContentPane());
@@ -35,7 +46,35 @@ public class RegWindow extends JFrame {
         tfPassword2 = new JTextField();
         btnReg = new JButton("Зарегистрироваться");
         btnCancel = new JButton("Я уже смешарик");
-
+        btnReg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pack pack = new Pack();
+                pack.action =Actions.REGISTRATION;
+                try {
+                    if(!tfPassword.getText().equals(tfPassword2.getText()))
+                        throw new IOException("Пароли не совпадают");
+                    String password = SCryptUtil.scrypt(tfPassword.getText(),8 ,10,10);
+                    String f = tfPhone.getText();
+                    long c = Long.parseLong(f);
+                    pack.personalData = new PersonalData(0,tfName.getText(),c,password);
+                    client.send(pack);
+                    Pack pack1 = new Pack();
+                    pack1.action = Actions.LOGIN;
+                    client.fireEvent(new BankEvent(pack1));
+                } catch (IOException ex) {
+                    System.out.println("reg" + ex.getMessage());
+                }
+            }
+        });
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pack pack = new Pack();
+                pack.action = Actions.LOGIN;
+                client.fireEvent(new BankEvent(pack));
+            }
+        });
         gl.setHorizontalGroup(
                 gl.createSequentialGroup()
                         .addGap(8,8, Integer.MAX_VALUE)

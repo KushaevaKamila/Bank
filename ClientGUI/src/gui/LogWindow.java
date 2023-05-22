@@ -1,6 +1,19 @@
 package gui;
 
+import client.BankEvent;
+import client.Client;
+import com.lambdaworks.crypto.SCrypt;
+import com.lambdaworks.crypto.SCryptUtil;
+import mysqlhelper.Account;
+import mysqlhelper.PersonalData;
+import pack.Actions;
+import pack.Pack;
+
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class LogWindow extends JFrame {
     private int MIN_SZ = GroupLayout.PREFERRED_SIZE;
@@ -13,8 +26,10 @@ public class LogWindow extends JFrame {
 
     private JButton btnReg;
     private JButton btnEnter;
+    private Client client;
 
-    public LogWindow(){
+    public LogWindow(Client client){
+        this.client = client;
         setSize(600,450);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         GroupLayout gl = new GroupLayout(getContentPane());
@@ -75,5 +90,27 @@ public class LogWindow extends JFrame {
         );
         gl.linkSize(0, lblPhone, lblPassword);
         gl.linkSize(0,btnReg,btnEnter);
+        btnEnter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pack pack = new Pack();
+                pack.action = Actions.LOGIN;
+                String password = SCryptUtil.scrypt(tfPassword.getText(),8,10,10);
+                pack.personalData = new PersonalData(0,null,Long.parseLong(tfPhone.getText()),password);
+                try {
+                    client.send(pack);
+                } catch (IOException ex) {
+                    System.out.println("Войти " + ex.getMessage());
+                }
+            }
+        });
+        btnReg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pack pack = new Pack();
+                pack.action = Actions.REGISTRATION;
+                client.fireEvent(new BankEvent(pack));
+            }
+        });
     }
 }

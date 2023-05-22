@@ -53,7 +53,7 @@ public class MainWindow implements BankListener {
             case REGISTRATION -> {
                 try {
                     closeAllWindows();
-                    regWindow = new RegWindow();
+                    regWindow = new RegWindow(client);
                     regWindow.setVisible(true);
                 } catch (Exception e) {
                     onError(e);
@@ -62,7 +62,7 @@ public class MainWindow implements BankListener {
             case LOGIN -> {
                 try {
                     closeAllWindows();
-                    logWindow = new LogWindow();
+                    logWindow = new LogWindow(client);
                     logWindow.setVisible(true);
                 } catch (Exception e) {
                     onError(e);
@@ -74,6 +74,7 @@ public class MainWindow implements BankListener {
                     cardWindow = new CardWindow(event.getMessage1(),client);
                     cardWindow.setVisible(true);
                 } catch (Exception e) {
+                    System.out.println("Debit" + e.getMessage());
                     onError(e);
                 }
             }
@@ -83,6 +84,7 @@ public class MainWindow implements BankListener {
                     cardWindow = new CardWindow(event.getMessage1(),client);
                     cardWindow.setVisible(true);
                 } catch (Exception e) {
+                    System.out.println("CREdit" + e.getMessage());
                     onError(e);
                 }
             }
@@ -90,7 +92,9 @@ public class MainWindow implements BankListener {
                 try {
                     closeAllWindows();
                     cardWindow = new CardWindow(event.getMessage1(),client);
+                    cardWindow.setVisible(true);
                 } catch (Exception e) {
+                    System.out.println("DEposit" + e.getMessage());
                     onError(e);
                 }
             }
